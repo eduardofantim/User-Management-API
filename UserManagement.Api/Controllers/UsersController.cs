@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Api.Data;
 using UserManagement.Api.Models;
-
+using UserManagement.Api.DTOs;
 namespace UserManagement.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -76,8 +76,18 @@ namespace UserManagement.Api.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(UserCreateDto userDto)
         {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+            var user = new User
+            {
+                Name = userDto.Name,
+                Email = userDto.Email,
+                PasswordHash = passwordHash
+            };
+
+
+            
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 

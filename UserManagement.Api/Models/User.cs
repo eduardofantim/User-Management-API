@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+using System.Text.Json.Serialization;
 namespace UserManagement.Api.Models
 
 {   
@@ -16,6 +16,11 @@ namespace UserManagement.Api.Models
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        
+
+        [Required(ErrorMessage = "A senha é obrigatória")]
+        [MinLength(6, ErrorMessage = "A senha deve ter no mínimo 6 caracteres")]    
+        [JsonIgnore]
+        public string PasswordHash { get; set; } = string.Empty;
+
     }
 }

@@ -7,5 +7,10 @@ Content-Type: application/json
 
 {
     "name": "Eduardo Fantim",
-    "email": "edugbf5@email.com"
+    "email": "edugbf5@email.com",
+    "password": "suasenha123"
 }
+
+###
+GET http://localhost:5004/api/users
+###
