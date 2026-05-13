@@ -1,0 +1,11 @@
+@UserManagement.Api_HostAddress = http://localhost:5004
+
+
+
+POST http://localhost:5004/api/users
+Content-Type: application/json
+
+{
+    "name": "Eduardo Fantim",
+    "email": "edugbf5@email.com"
+}
