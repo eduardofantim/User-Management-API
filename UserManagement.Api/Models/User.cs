@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 namespace UserManagement.Api.Models
 
 {   
+    public enum UserRole { User, Manager, Admin }
+
     public class User
     {
         [Key]
@@ -21,6 +23,9 @@ namespace UserManagement.Api.Models
         [MinLength(6, ErrorMessage = "A senha deve ter no mínimo 6 caracteres")]    
         [JsonIgnore]
         public string PasswordHash { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Role is required")]
+        public UserRole Role { get; set; } = UserRole.User;
 
     }
 }
