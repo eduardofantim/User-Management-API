@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using UserManagement.Api.Data;
 using UserManagement.Api.Models;
-
+using UserManagement.Api.DTOs;
 namespace UserManagement.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -22,6 +23,7 @@ namespace UserManagement.Api.Controllers
         }
 
         // GET: api/Users
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -29,6 +31,7 @@ namespace UserManagement.Api.Controllers
         }
 
         // GET: api/Users/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
@@ -45,47 +48,25 @@ namespace UserManagement.Api.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        [Authorize(Roles = "Admin,Manager")] // só Admin e manager pode editar usuários
+        public async Task<IActionResult> PutUser(int id, UserUpdateDto dto)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
+            
+           if(dto.Name != null) user.Name = dto.Name;
+           if(dto.Email != null) user.Email = dto.Email;
 
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return Ok(user);
+
         }
 
-        // DELETE: api/Users/5
+
+        //DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Manager")] // só Admin e manager pode excluir usuários
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -98,11 +79,6 @@ namespace UserManagement.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
         }
     }
 }
