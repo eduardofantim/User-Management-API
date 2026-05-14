@@ -3,9 +3,10 @@
 API para gerenciamento de usuários desenvolvida em ASP.NET Core durante meus estudos de back-end.
 
 ## 🚀 Tecnologias
-* C# / .NET 9
+* C# / .NET 10
 * ASP.NET Core Web API
 * Entity Framework Core (SQL Server)
+* Bcrypt
 
 ## 🛠️ Como rodar a aplicação
 1. Clone o repositório.
